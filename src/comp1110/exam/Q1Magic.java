@@ -27,8 +27,34 @@ public class Q1Magic {
    * @param number A number
    * @return true if number is a magic number as defined above.
    */
+  // Recursion (省去了很多控制流) == Iteration
   public static boolean magic(String number) {
-    // FIXME complete this method
-    return true;
+    try {
+      if (number.isEmpty() || Integer.parseInt(number) == 0) {
+        return false;
+      }
+    } catch (Exception e) {
+      return false;
+    }
+      // 4567 -> (n - 1 = 3)456  -> (n - 1 = 2)45  -> (n - 1 = 1)4
+      int sum;
+      String subNum;
+      for (int i = 0; i < number.length(); i++) {
+        subNum = number.substring(0, number.length() - i);
+        sum = getSum(subNum);
+        // fail fast
+        if (!(sum % 2 == 0 || sum % 3 == 0)) {
+          return false;
+        }
+      }
+      return true;
+  }
+
+  private static int getSum(String number) {
+    int sum = 0;
+    for (int i = 0; i < number.length(); i++) {
+      sum += number.charAt(i) - 48;
+    }
+    return sum;
   }
 }

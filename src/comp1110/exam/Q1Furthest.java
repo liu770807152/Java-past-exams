@@ -21,7 +21,19 @@ public class Q1Furthest {
      * has no entries.
      */
     public static int findFurthest(int[] in, int target) {
-        // FIXME complete this method
-        return Integer.MAX_VALUE;
+        if (in.length == 0) {
+            return target;
+        }
+        int margin = Integer.MIN_VALUE;
+        int value = 0;
+        for (int i = 0; i < in.length; i++) {
+            if (Math.abs(in[i] - target) > margin) {
+                margin = Math.abs(in[i] - target);
+                value = in[i];
+            } else if (Math.abs(in[i] - target) == margin && in[i] > value) {
+                value = in[i];
+            }
+        }
+        return value;
     }
 }

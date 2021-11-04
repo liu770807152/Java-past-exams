@@ -21,7 +21,6 @@ public class Q1Closest {
      * has no entries.
      */
     public static int findClosest(int[] in, int target) {
-        // FIXME complete this method
         return 0;
     }
 }

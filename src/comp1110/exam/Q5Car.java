@@ -27,9 +27,13 @@ public class Q5Car {
     int year;
 
     public Q5Car(String make, String model, int year) {
-        if (make == null) throw new IllegalArgumentException("make may not be null!");
+        if (make == null) {
+            throw new IllegalArgumentException("make may not be null!");
+        }
         this.make = make;
-        if (model == null) throw new IllegalArgumentException("model may not be null!");
+        if (model == null) {
+            throw new IllegalArgumentException("model may not be null!");
+        }
         this.model = model;
         this.year = year;
     }
@@ -42,8 +46,24 @@ public class Q5Car {
      */
     @Override
     public int hashCode() {
-        // FIXME complete this method
-        return new Random().nextInt(2);
+        if (this.make != null && this.model != null) {
+            return ((int) (Math.pow(this.make.charAt(0) + this.make.charAt(make.length() - 1), 3) +
+                    (int) (Math.pow(this.model.charAt(this.model.length() - 1), 2)) +
+                    this.year))
+                    % 10000;
+        } else if (this.make == null) {
+            return ((int) (Math.pow(200, 3) +
+                    (int) (Math.pow(this.model.charAt(this.model.length() - 1), 2)) +
+                    this.year))
+                    % 10000;
+        } else if (this.model == null) {
+            return ((int) (Math.pow(this.make.charAt(0) + this.make.charAt(make.length() - 1), 3) +
+                    (int) (Math.pow(200, 2)) +
+                    this.year))
+                    % 10000;
+        } else {
+            return this.year;
+        }
     }
 
     /**
@@ -52,8 +72,11 @@ public class Q5Car {
      */
     @Override
     public boolean equals(Object object) {
-        // FIXME complete this method
-        return false;
+        if (object != null) {
+            return this.hashCode() == object.hashCode();
+        } else {
+            return false;
+        }
     }
 
     @Override

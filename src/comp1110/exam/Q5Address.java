@@ -27,7 +27,9 @@ public class Q5Address {
     int postCode;
 
     public Q5Address(int streetNumber, String streetName, int postCode) {
-        if (streetName == null) throw new IllegalArgumentException("Street name may not be null!");
+        if (streetName == null) {
+            throw new IllegalArgumentException("Street name may not be null!");
+        }
         this.streetNumber = streetNumber;
         this.streetName = streetName;
         this.postCode = postCode;
@@ -41,8 +43,17 @@ public class Q5Address {
      */
     @Override
     public int hashCode() {
-        // FIXME complete this method
-        return new Random().nextInt(2);
+        if (this.streetName != null) {
+            return ((int) (Math.pow(this.streetName.charAt(0) + this.streetName.charAt(streetName.length() - 1), 3) +
+                    (int) (Math.pow(this.streetNumber, 2)) +
+                    this.postCode))
+                    % 10000;
+        } else {
+            return ((int) (Math.pow(200, 3) +
+                    (int) (Math.pow(this.streetNumber, 2)) +
+                    this.postCode))
+                    % 10000;
+        }
     }
 
     /**
@@ -51,8 +62,11 @@ public class Q5Address {
      */
     @Override
     public boolean equals(Object object) {
-        // FIXME complete this method
-        return false;
+        if (object != null) {
+            return this.hashCode() == object.hashCode();
+        } else {
+            return false;
+        }
     }
 
     @Override

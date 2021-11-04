@@ -1,7 +1,11 @@
 package comp1110.exam;
 
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.Timeout;
+
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 /**
@@ -34,4 +38,12 @@ public class Q3GetMaxCoStarsTest {
     };
 
     // FIXME add one or more JUnit unit tests for the getMaxCoStars() method of the Q3Hollywood class
+    @Test
+    public void testGetMaxCoStars() {
+        Q3Hollywood library = new Q3Hollywood();
+        for (int i = 0; i < names.length; i++) {
+            library.addFilm(names[i], years[i], directors[i], Set.of(actors[i]));
+        }
+        assertEquals("getMaxCoStars() returned incorrect value", 5, library.getMaxCoStars());
+    }
 }

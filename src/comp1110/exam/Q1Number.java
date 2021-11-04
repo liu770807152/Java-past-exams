@@ -1,5 +1,7 @@
 package comp1110.exam;
 
+import java.util.ArrayList;
+
 /**
  * COMP1110 Final Exam, Question 1.3 (harder)
  *
@@ -62,6 +64,98 @@ public class Q1Number {
    * if it is not in the grid.
    */
   public static int find(int[] grid, int target) {
-    return -2;  // FIXME complete this method
+    return traverseGrid(grid, target + "");
+  }
+
+  private static int traverseGrid(int[] grid, String target) {
+    int length = (int) Math.sqrt(grid.length);
+    // 求出所有边界
+    ArrayList<ArrayList<Integer>> boundaries = new ArrayList<>();
+    ArrayList<Integer> boundary = new ArrayList<>();
+    // 上边界
+    for (int j = 0; j < length; j++) {
+      boundary.add(j);
+    }
+    boundaries.add((ArrayList<Integer>) boundary.clone());
+    boundary.clear();
+    // 下边界
+    for (int j = 0; j < length; j++) {
+      boundary.add((int) Math.pow(length, 2) - length + j);
+    }
+    boundaries.add((ArrayList<Integer>) boundary.clone());
+    boundary.clear();
+    // 左边界
+    for (int j = 0; j < length; j++) {
+      boundary.add(j * length);
+    }
+    boundaries.add((ArrayList<Integer>) boundary.clone());
+    boundary.clear();
+    // 右边界
+    for (int j = 0; j < length; j++) {
+      boundary.add(j * length + length - 1);
+    }
+    boundaries.add((ArrayList<Integer>) boundary.clone());
+    boundary.clear();
+    ArrayList<Integer> nextPosition = new ArrayList<>() {{
+      add(-length);
+      add(length);
+      add(-1);
+      add(1);
+    }};
+
+    boolean[] visited = new boolean[grid.length];
+    for (int i = 0; i < grid.length; i++) {
+      if (grid[i] == target.charAt(0) - '0' && travel(grid, target, boundaries, nextPosition, visited, i, "")) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private static boolean travel(int[] grid, String target,
+                                  ArrayList<ArrayList<Integer>> boundaries, ArrayList<Integer> nextPosition, boolean[] visited, int position, String current) {
+    if (position >= grid.length ||
+            visited[position] ||
+            !compareString(target, current + grid[position])) {
+      return false;
+    }
+    current += grid[position];
+    visited[position] = true;
+    // 找到则返回起始位置
+    if (current.equals(target)) {
+      return true;
+    }
+    // 没找到，先判断当前位置是不是边界
+    ArrayList<Boolean> isBoundary = new ArrayList<>();
+    for (int i = 0; i < boundaries.size(); i++) {
+      if (boundaries.get(i).contains(position)) {
+        isBoundary.add(true);
+      } else {
+        isBoundary.add(false);
+      }
+    }
+    // 再根据是否为边界决定探索方向
+    boolean result;
+    for (int i = 0; i < isBoundary.size(); i++) {
+      if (!isBoundary.get(i)) {
+        result = travel(grid, target, boundaries, nextPosition, visited, position + nextPosition.get(i), current);
+        if (result) {
+          return true;
+        }
+      }
+    }
+    visited[position] = false;
+    return false;
+  }
+
+  private static boolean compareString(String target, String current) {
+    if (current.length() > target.length()) {
+      return false;
+    } else if (current.length() < target.length()) {
+      String sub = target.substring(0, current.length());
+      return sub.equals(current);
+    } else {
+      return current.equals(target);
+    }
   }
 }

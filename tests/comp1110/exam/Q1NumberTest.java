@@ -23,8 +23,8 @@ public class Q1NumberTest {
 
     @Test
     public void testTwo() {
-//        test(new int[]{0, 1, 2, 3}, 1, 1);
-//        test(new int[]{0, 1, 2, 3}, 10, 1);
+        test(new int[]{0, 1, 2, 3}, 1, 1);
+        test(new int[]{0, 1, 2, 3}, 10, 1);
         test(new int[]{0, 1, 2, 3}, 23, 2);
         test(new int[]{0, 1, 2, 3}, 32, 3);
         test(new int[]{0, 1, 2, 3}, 7, -1);

@@ -26,6 +26,14 @@ public class Q1Ox {
    * above), 0 if it is and empty string, and -1 if it is not an ox word.
    */
   public static int ox(String word) {
-    return -1;  // FIXME complete this method
+    return 0;
+  }
+
+  private static boolean checkSubWord(String word) {
+    return true;
+  }
+
+  private static boolean checkOx(String word) {
+    return true;
   }
 }

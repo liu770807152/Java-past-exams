@@ -1,5 +1,8 @@
 package comp1110.exam;
 
+import java.io.*;
+import java.util.ArrayList;
+
 /**
  * COMP1110 Final Exam, Question 2
  *
@@ -42,6 +45,76 @@ public class Q2Checksum {
    * @param checksum if true, include checksums in the output file
    */
   public static void checksum(String input, String output, boolean checksum) {
-    // FIXME complete this method
+    // 第一步： 声明InputStream和OutputStream对象
+    InputStream in = null;
+    OutputStream out = null;
+    // 第二步： 写try block
+    try {
+      // 第三步： 定义InputStream和OutputStream对象
+      in = new FileInputStream(input);
+      out = new FileOutputStream(output);
+      // byte[] buffer = new byte[10];
+      // 第四步： 开始处理读入数据
+      if (!checksum) {
+        int readIn;
+        while ((readIn = in.read()) != -1) {
+          out.write(readIn);
+        }
+      } else {
+        // 第四步
+        int readIn;
+        // 因为需要在每10个字节前插入一个checksum，所以需要暂存这10个字节
+        ArrayList<Integer> word = new ArrayList<>();
+        int count = 0;
+        while ((readIn = in.read()) != -1) {
+          word.add(readIn);
+          count++;
+          if (count == 10) {
+            writeFile(word, out, calChecksum(word));
+            // 切记清空！
+            word.clear();
+            count = 0;
+          }
+        }
+        // 把最后不足10个字节的数据也写进去
+        if (!word.isEmpty()) {
+          writeFile(word, out, calChecksum(word));
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      // 第五步： 关闭文件流
+      try {
+        if (in != null) {
+          in.close();
+        }
+        if (out != null) {
+          out.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private static void writeFile(ArrayList<Integer> word, OutputStream out, int checksum) {
+    try {
+      // 依据题意，checksum插入在前面
+      out.write(checksum);
+      for (Integer current : word) {
+        out.write(current);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static int calChecksum(ArrayList<Integer> word) {
+    int sum = 0;
+    for (Integer current : word) {
+      sum += current;
+    }
+    return sum % 26 + 'a';
   }
 }

@@ -1,6 +1,6 @@
 package comp1110.exam;
 
-import java.util.Set;
+import java.util.*;
 
 /**
  * COMP1110 Exam, Question 3.1
@@ -12,6 +12,19 @@ import java.util.Set;
  * person may be either an actor, or a director, or both, for one or more films.
  */
 public class Q3Hollywood {
+    private HashMap<String, FilmDetail> films = new HashMap<>();
+
+    public class FilmDetail {
+        int year;
+        String director;
+        Set<String> actors;
+        FilmDetail(int year, String director, Set<String> actors) {
+            this.year = year;
+            this.director = director;
+            this.actors = actors;
+        }
+    }
+
     /**
      * Add a new film to this library. If the given film name exists, do not
      * modify this library.
@@ -24,8 +37,11 @@ public class Q3Hollywood {
      * film was not added (because a film with the given name already exists)
      */
     public boolean addFilm(String filmName, int year, String director, Set<String> actors) {
-        // FIXME complete this method
-        return false;
+        if (this.films.containsKey(filmName)) {
+            return false;
+        }
+        this.films.put(filmName, new FilmDetail(year, director, actors));
+        return true;
     }
 
 
@@ -37,7 +53,10 @@ public class Q3Hollywood {
      * @return true if the removal was successful, otherwise false
      */
     public boolean deleteFilm(String filmName) {
-        // FIXME complete this method
+        if (this.films.containsKey(filmName)) {
+            this.films.remove(filmName);
+            return true;
+        }
         return false;
     }
 
@@ -45,8 +64,7 @@ public class Q3Hollywood {
      * @return the total number of films in this library
      */
     public int getFilmCount() {
-        // FIXME complete this method
-        return -1;
+        return this.films.size();
     }
 
     /**
@@ -57,8 +75,14 @@ public class Q3Hollywood {
      * @return the names of all films for which the given person was director
      */
     public Set<String> getFilmsDirectedBy(String directorName) {
-        // FIXME complete this method
-        return null;
+        Set<String> result = new HashSet<>();
+        for (String key : films.keySet()) {
+            FilmDetail filmDetail = films.get(key);
+            if (filmDetail.director.equals(directorName)) {
+                result.add(key);
+            }
+        }
+        return result;
     }
 
     /**
@@ -72,8 +96,14 @@ public class Q3Hollywood {
      * an actor or a director
      */
     public Set<String> getFilms(String personName) {
-        // FIXME complete this method
-        return null;
+        HashSet<String> result = new HashSet<>();
+        for (String key : films.keySet()) {
+            FilmDetail filmDetail = films.get(key);
+            if (filmDetail.director.equals(personName) || filmDetail.actors.contains(personName)) {
+                result.add(key);
+            }
+        }
+        return result;
     }
 
     /**
@@ -91,8 +121,12 @@ public class Q3Hollywood {
      * @return the number of unique actors across all films
      */
     public int getNumActors() {
-        // FIXME complete this method
-        return -1;
+        Set<String> actors = new HashSet<>();
+        for (String key : films.keySet()) {
+            FilmDetail filmDetail = films.get(key);
+            actors.addAll(filmDetail.actors);
+        }
+        return actors.size();
     }
 
     /**
@@ -101,7 +135,12 @@ public class Q3Hollywood {
      * @return true if person1 and person2 have both been actors in the same film
      */
     public boolean areCoStars(String person1, String person2) {
-        // FIXME complete this method
+        for (String key : films.keySet()) {
+            FilmDetail filmDetail = films.get(key);
+            if (filmDetail.actors.contains(person1) && filmDetail.actors.contains(person2)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -111,8 +150,19 @@ public class Q3Hollywood {
      * or director for any film
      */
     public int getFirstFilmYear(String personName) {
-        // FIXME complete this method
-        return -1;
+        int earlistYear = Integer.MAX_VALUE;
+        for (String key : films.keySet()) {
+            FilmDetail filmDetail = films.get(key);
+            if (filmDetail.director.equals(personName) || filmDetail.actors.contains(personName)) {
+                if (filmDetail.year < earlistYear) {
+                    earlistYear = filmDetail.year;
+                }
+            }
+        }
+        if (earlistYear == Integer.MAX_VALUE) {
+            return -1;
+        }
+        return earlistYear;
     }
 
     /**
@@ -131,8 +181,35 @@ public class Q3Hollywood {
      * @return the maximum number of films for any person
      */
     public int getMaxFilms() {
-        // FIXME complete this method
-        return -1;
+        int max = 0;
+        Map<String, Integer> counter = new HashMap<>();
+        Set<String> names = new HashSet<>();
+        for (String key : films.keySet()) {
+            FilmDetail filmDetail = films.get(key);
+            // 统计人
+            names.add(filmDetail.director);
+            names.addAll(filmDetail.actors);
+            // 更新map
+            for (String current : names) {
+                update(counter, current);
+            }
+            names.clear();
+        }
+        for (Integer cur : counter.values()) {
+            if (cur > max) {
+                max = cur;
+            }
+        }
+        return max;
+    }
+
+    private void update(Map<String, Integer> counter, String cur) {
+        if (counter.containsKey(cur)) {
+            int temp = counter.get(cur);
+            counter.replace(cur, temp+1);
+        } else {
+            counter.put(cur, 1);
+        }
     }
 
     /**
@@ -152,8 +229,48 @@ public class Q3Hollywood {
      *
      * @return the maximum number of co-stars for any actor
      */
+
+//    for (String outerName : filmDetail.actors) {
+//        for (String innerName : filmDetail.actors) {
+//            if (!innerName.equals(outerName)) {
+//                // add it into set
+//            }
+//        }
+//    }
     public int getMaxCoStars() {
-        // FIXME complete this method
-        return -1;
+        Map<String, Set<String>> counter = new HashMap<>();
+        for (String key : films.keySet()) {
+            String[] actors = (String[]) this.films.get(key).actors.toArray();
+            Set<String> cur = new HashSet<>();
+            for (int i = 0; i < actors.length; i++) {
+                for (int j = 0; j < actors.length; j++) {
+                    if (j != i) {
+                        String secondActor = actors[j];
+                        cur.add(secondActor);
+                    }
+                }
+                updateMap(counter, cur, actors[i]);
+                cur.clear();
+            }
+        }
+        return getMaxLast(counter);
+    }
+
+    private void updateMap(Map<String, Set<String>> counter, Set<String> cur, String actor) {
+        if (counter.containsKey(actor)) {
+            counter.get(actor).addAll(cur);
+        } else {
+            counter.put(actor, cur);
+        }
+    }
+
+    private int getMaxLast(Map<String, Set<String>> counter) {
+        int max = 0;
+        for (Set cur : counter.values()) {
+            if (cur.size() > max) {
+                max = cur.size();
+            }
+        }
+        return max;
     }
 }
