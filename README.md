@@ -1,6 +1,6 @@
-# COMP1110/1140/6710 2020 S2 Exam
+# COMP1110/1140/6710 Final Exam
 
-This repo contains an IntelliJ project for the 2020 S2 exam.
+This repo contains an IntelliJ project for the final exam.
 
 *Note that you will see multiple versions of many of the questions (eg Q1.1A, Q1.1B, etc).
 In the actual exam you would be randomly assigned one of the variants.   When using
